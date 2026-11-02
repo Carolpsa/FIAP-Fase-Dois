@@ -13,7 +13,7 @@ class UsuarioTest {
 
     @Test
     void deveCriarUsuarioValido() {
-        Usuario usuario = new Usuario(1L, "Maria", "Maria@Email.com", "maria", DadosDeTeste.tipoDono());
+        Usuario usuario = new Usuario(1L, "Maria", "maria@email.com", "maria", DadosDeTeste.tipoDono());
 
         assertThat(usuario.getId()).isEqualTo(1L);
         assertThat(usuario.getNome()).isEqualTo("Maria");
