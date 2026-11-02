@@ -1,4 +1,4 @@
-# Tech Challenge – Fase 2 · Sistema de Gestão de Restaurantes 🍝
+# Tech Challenge – Fase 2 · Sistema de Gestão de Restaurantes
 
 Projeto da Fase 2 da pós-graduação **Arquitetura e Desenvolvimento Java (FIAP Pós Tech)**.
 
@@ -19,7 +19,6 @@ Nesta fase o sistema ganhou:
 5. [Como executar](#-como-executar)
 6. [Testes e cobertura](#-testes-e-cobertura)
 7. [Collection do Postman](#-collection-do-postman)
-8. [Checklist dos entregáveis](#-checklist-dos-entregáveis)
 
 ---
 
@@ -85,11 +84,6 @@ src/main/java/br/com/fiap/techchallenge
         └── exception              ➜ tratamento global de erros
 ```
 
-**Por que fiz assim?**
-
-- As **entidades de domínio** se validam sozinhas no construtor (ex.: preço tem que ser maior que zero). Assim não existe objeto inválido circulando no sistema.
-- Os **casos de uso** não têm `@Service`; eles são criados como `@Bean` na classe `UseCaseConfig`. Isso deixa a camada de aplicação independente do Spring e fácil de testar com Mockito.
-- As **entidades JPA** ficam separadas das entidades de domínio, e os *mappers* fazem a conversão. Se um dia trocar o banco, só a infraestrutura muda.
 
 ### Associação usuário ⇄ tipo de usuário
 
@@ -112,7 +106,7 @@ erDiagram
 4. O **dono do restaurante precisa ser um usuário do tipo "Dono de Restaurante"**.
 5. Um usuário que é dono de algum restaurante não pode virar "Cliente" nem ser excluído.
 6. Um restaurante só pode ser excluído se não tiver itens no cardápio.
-7. O preço do item precisa ser maior que zero. A foto é opcional (guardamos só o caminho do arquivo).
+7. O preço do item precisa ser maior que zero. A foto é opcional.
 
 ### Status HTTP usados
 
@@ -231,11 +225,11 @@ Associação com o tipo (`PATCH /usuarios/{id}/tipo`):
 
 ### Pré-requisitos
 
-- **Docker** e **Docker Compose** (para a opção 1)
-- **Java 21** e **Maven 3.9+** (para a opção 2 e para rodar os testes)
-- **VS Code** com as extensões recomendadas (o VS Code sugere sozinho ao abrir a pasta: Extension Pack for Java, Spring Boot Extension Pack, Docker e REST Client)
+- **Docker** e **Docker Compose** 
+- **Java 21** e **Maven 3.9+** 
+- **VS Code** com as extensões recomendadas
 
-### Opção 1 – Tudo pelo Docker Compose (mais fácil)
+### Executar
 
 ```bash
 docker compose up --build
@@ -247,13 +241,6 @@ Isso sobe o PostgreSQL e a aplicação. Quando aparecer `Started TechChallengeAp
 - Swagger: http://localhost:8080/swagger-ui.html
 
 Para parar: `docker compose down` (e `docker compose down -v` se quiser apagar os dados do banco também).
-
-### Opção 2 – Banco no Docker e aplicação pelo VS Code
-
-1. Suba só o banco: `docker compose up -d postgres`
-   (ou no VS Code: `Ctrl+Shift+P` → **Tasks: Run Task** → *Subir só o banco*)
-2. Abra a aba **Run and Debug** (`Ctrl+Shift+D`) e rode **"Rodar aplicação"**,
-   ou pelo terminal: `mvn spring-boot:run`
 
 A conexão com o banco pode ser mudada pelas variáveis de ambiente `DB_URL`, `DB_USERNAME` e `DB_PASSWORD`.
 
@@ -279,7 +266,7 @@ No VS Code também dá para rodar pelo **Testing** (ícone de tubo de ensaio) ou
 | Unitários dos casos de uso | `src/test/.../application/usecase` | Regras de negócio, com os gateways "mockados" pelo Mockito |
 | Integração | `src/test/.../integration` | Sobe a aplicação inteira com banco H2 e chama os endpoints com MockMvc (controller → caso de uso → gateway → banco) |
 
-Os testes de integração usam `@Transactional`, então cada teste começa com o banco limpo (só com os tipos padrão).
+
 
 ---
 
@@ -292,24 +279,3 @@ Arquivo: [`postman/tech-challenge-fase2.postman_collection.json`](postman/tech-c
 3. As requisições guardam os ids criados em variáveis, então dá para rodar tudo em sequência. As pastas são:
    1. Tipos de Usuário · 2. Usuários · 3. Restaurantes · 4. Itens do Cardápio · 5. Cenários de erro · 6. Limpeza
 
-Também deixei o arquivo [`requests.http`](requests.http) para testar direto no VS Code com a extensão **REST Client**.
-
----
-
-## 📦 Checklist dos entregáveis
-
-| # | Entregável | Onde está |
-|---|---|---|
-| 1 | Funcionalidades (tipo de usuário, restaurante, itens do cardápio) | Controllers em `infrastructure/web/controller` |
-| 2 | Qualidade do código / boas práticas Spring Boot | Injeção por construtor, Bean Validation, `@RestControllerAdvice`, DTOs, Swagger |
-| 3 | Documentação do projeto | Este README + Swagger |
-| 4 | Collection para testes | `postman/` e `requests.http` |
-| 5 | Docker Compose | `docker-compose.yml` + `Dockerfile` |
-| 6 | Repositório aberto | Link: _colocar aqui o link do GitHub_ |
-| 7 | Clean Architecture | Pacotes `domain`, `application` e `infrastructure` |
-| 8 | Cobertura de testes ≥ 80% + testes de integração | `mvn clean verify` (JaCoCo) |
-| 9 | Vídeo de ~5 minutos | Link: _colocar aqui o link do vídeo_ · roteiro em [`docs/roteiro-video.md`](docs/roteiro-video.md) |
-
----
-
-👩‍💻 Desenvolvido por **_[seu nome]_** – FIAP Pós Tech, Arquitetura e Desenvolvimento Java.
