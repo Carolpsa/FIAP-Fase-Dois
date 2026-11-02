@@ -1,0 +1,616 @@
+{
+  "info": {
+    "name": "Tech Challenge Fase 2 - Gestão de Restaurantes",
+    "description": "Collection para testar todos os endpoints. Pode rodar tudo de uma vez pelo Collection Runner: os ids criados são guardados nas variáveis da collection automaticamente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "tipoDonoId", "value": "" },
+    { "key": "tipoClienteId", "value": "" },
+    { "key": "tipoUsuarioId", "value": "" },
+    { "key": "usuarioDonoId", "value": "" },
+    { "key": "usuarioClienteId", "value": "" },
+    { "key": "restauranteId", "value": "" },
+    { "key": "itemId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1 - Tipos de Usuário",
+      "item": [
+        {
+          "name": "Listar tipos de usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const tipos = pm.response.json();",
+                  "const dono = tipos.find(t => t.nome === 'Dono de Restaurante');",
+                  "const cliente = tipos.find(t => t.nome === 'Cliente');",
+                  "pm.test('Tipos padrão existem', () => { pm.expect(dono).to.not.be.undefined; pm.expect(cliente).to.not.be.undefined; });",
+                  "pm.collectionVariables.set('tipoDonoId', dono.id);",
+                  "pm.collectionVariables.set('tipoClienteId', cliente.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tipos-usuario"
+          }
+        },
+        {
+          "name": "Cadastrar tipo de usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('tipoUsuarioId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Funcionário {{$timestamp}}\"\n}" },
+            "url": "{{baseUrl}}/tipos-usuario"
+          }
+        },
+        {
+          "name": "Buscar tipo de usuário por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tipos-usuario/{{tipoUsuarioId}}"
+          }
+        },
+        {
+          "name": "Atualizar tipo de usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Garçom {{$timestamp}}\"\n}" },
+            "url": "{{baseUrl}}/tipos-usuario/{{tipoUsuarioId}}"
+          }
+        },
+        {
+          "name": "Excluir tipo de usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 204', () => pm.response.to.have.status(204));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/tipos-usuario/{{tipoUsuarioId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Usuários",
+      "item": [
+        {
+          "name": "Cadastrar usuário dono de restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('usuarioDonoId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Maria Souza\",\n  \"email\": \"maria.{{$timestamp}}@email.com\",\n  \"login\": \"maria.souza\",\n  \"tipoUsuarioId\": {{tipoDonoId}}\n}"
+            },
+            "url": "{{baseUrl}}/usuarios"
+          }
+        },
+        {
+          "name": "Cadastrar usuário cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('usuarioClienteId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Silva\",\n  \"email\": \"joao.{{$timestamp}}@email.com\",\n  \"login\": \"joao.silva\",\n  \"tipoUsuarioId\": {{tipoClienteId}}\n}"
+            },
+            "url": "{{baseUrl}}/usuarios"
+          }
+        },
+        {
+          "name": "Listar usuários",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/usuarios"
+          }
+        },
+        {
+          "name": "Buscar usuário por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/usuarios/{{usuarioClienteId}}"
+          }
+        },
+        {
+          "name": "Atualizar usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Silva Santos\",\n  \"email\": \"joao.santos.{{$timestamp}}@email.com\",\n  \"login\": \"joao.santos\",\n  \"tipoUsuarioId\": {{tipoClienteId}}\n}"
+            },
+            "url": "{{baseUrl}}/usuarios/{{usuarioClienteId}}"
+          }
+        },
+        {
+          "name": "Associar usuário ao tipo Dono de Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tipo alterado', () => pm.expect(pm.response.json().tipoUsuario.nome).to.eql('Dono de Restaurante'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipoUsuarioId\": {{tipoDonoId}}\n}" },
+            "url": "{{baseUrl}}/usuarios/{{usuarioClienteId}}/tipo"
+          }
+        },
+        {
+          "name": "Associar usuário de volta ao tipo Cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipoUsuarioId\": {{tipoClienteId}}\n}" },
+            "url": "{{baseUrl}}/usuarios/{{usuarioClienteId}}/tipo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Restaurantes",
+      "item": [
+        {
+          "name": "Cadastrar restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('restauranteId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Cantina da Nona\",\n  \"endereco\": \"Rua das Flores, 123 - Centro\",\n  \"tipoCozinha\": \"Italiana\",\n  \"horarioFuncionamento\": \"Terça a Domingo, das 11h às 23h\",\n  \"donoId\": {{usuarioDonoId}}\n}"
+            },
+            "url": "{{baseUrl}}/restaurantes"
+          }
+        },
+        {
+          "name": "Listar restaurantes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/restaurantes"
+          }
+        },
+        {
+          "name": "Buscar restaurante por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/restaurantes/{{restauranteId}}"
+          }
+        },
+        {
+          "name": "Atualizar restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Cantina da Nona - Unidade Centro\",\n  \"endereco\": \"Rua das Flores, 123 - Centro\",\n  \"tipoCozinha\": \"Italiana\",\n  \"horarioFuncionamento\": \"Todos os dias, das 11h às 23h\",\n  \"donoId\": {{usuarioDonoId}}\n}"
+            },
+            "url": "{{baseUrl}}/restaurantes/{{restauranteId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Itens do Cardápio",
+      "item": [
+        {
+          "name": "Cadastrar item do cardápio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('itemId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lasanha à bolonhesa\",\n  \"descricao\": \"Lasanha caseira com molho bolonhesa e queijo gratinado\",\n  \"preco\": 49.90,\n  \"disponivelApenasNoLocal\": false,\n  \"caminhoFoto\": \"/imagens/pratos/lasanha.jpg\",\n  \"restauranteId\": {{restauranteId}}\n}"
+            },
+            "url": "{{baseUrl}}/itens-cardapio"
+          }
+        },
+        {
+          "name": "Listar todos os itens",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/itens-cardapio"
+          }
+        },
+        {
+          "name": "Listar itens de um restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tem pelo menos 1 item', () => pm.expect(pm.response.json().length).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/itens-cardapio?restauranteId={{restauranteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["itens-cardapio"],
+              "query": [{ "key": "restauranteId", "value": "{{restauranteId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Buscar item por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/itens-cardapio/{{itemId}}"
+          }
+        },
+        {
+          "name": "Atualizar item do cardápio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lasanha à bolonhesa (grande)\",\n  \"descricao\": \"Serve 2 pessoas\",\n  \"preco\": 79.90,\n  \"disponivelApenasNoLocal\": true,\n  \"caminhoFoto\": \"/imagens/pratos/lasanha-grande.jpg\",\n  \"restauranteId\": {{restauranteId}}\n}"
+            },
+            "url": "{{baseUrl}}/itens-cardapio/{{itemId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - Cenários de erro (regras de negócio)",
+      "item": [
+        {
+          "name": "Restaurante com dono que é Cliente (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 422', () => pm.response.to.have.status(422));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Restaurante Inválido\",\n  \"endereco\": \"Rua X, 1\",\n  \"tipoCozinha\": \"Japonesa\",\n  \"horarioFuncionamento\": \"Todos os dias\",\n  \"donoId\": {{usuarioClienteId}}\n}"
+            },
+            "url": "{{baseUrl}}/restaurantes"
+          }
+        },
+        {
+          "name": "Excluir restaurante que tem itens (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 422', () => pm.response.to.have.status(422));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/restaurantes/{{restauranteId}}"
+          }
+        },
+        {
+          "name": "Excluir usuário que é dono de restaurante (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 422', () => pm.response.to.have.status(422));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/usuarios/{{usuarioDonoId}}"
+          }
+        },
+        {
+          "name": "Item com preço negativo (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Suco\",\n  \"descricao\": \"Suco natural\",\n  \"preco\": -5,\n  \"disponivelApenasNoLocal\": false,\n  \"restauranteId\": {{restauranteId}}\n}"
+            },
+            "url": "{{baseUrl}}/itens-cardapio"
+          }
+        },
+        {
+          "name": "Buscar tipo de usuário inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tipos-usuario/999999"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 - Limpeza (exclusões)",
+      "item": [
+        {
+          "name": "Excluir item do cardápio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 204', () => pm.response.to.have.status(204));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/itens-cardapio/{{itemId}}"
+          }
+        },
+        {
+          "name": "Excluir restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 204', () => pm.response.to.have.status(204));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/restaurantes/{{restauranteId}}"
+          }
+        },
+        {
+          "name": "Excluir usuário dono",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 204', () => pm.response.to.have.status(204));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/usuarios/{{usuarioDonoId}}"
+          }
+        },
+        {
+          "name": "Excluir usuário cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Status 204', () => pm.response.to.have.status(204));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/usuarios/{{usuarioClienteId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

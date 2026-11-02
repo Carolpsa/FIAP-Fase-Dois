@@ -1,0 +1,6 @@
+target
+.vscode
+.git
+postman
+docs
+*.md

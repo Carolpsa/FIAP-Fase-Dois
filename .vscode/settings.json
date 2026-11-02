@@ -1,0 +1,12 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "disabled",
+  "java.test.config": {
+    "name": "padrao"
+  },
+  "files.encoding": "utf8",
+  "editor.formatOnSave": false,
+  "files.exclude": {
+    "**/target": true
+  }
+}

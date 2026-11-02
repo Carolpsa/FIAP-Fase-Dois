@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Rodar aplicação (precisa do Postgres no Docker)",
+      "request": "launch",
+      "mainClass": "br.com.fiap.techchallenge.TechChallengeApplication",
+      "projectName": "tech-challenge-restaurantes"
+    }
+  ]
+}

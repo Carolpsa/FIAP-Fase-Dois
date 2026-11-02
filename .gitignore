@@ -1,0 +1,20 @@
+target/
+*.class
+*.log
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.factorypath
+
+# VS Code (mantemos as configs do projeto, ignoramos o resto)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+.DS_Store

@@ -1,0 +1,72 @@
+### Requisições para testar direto no VS Code (extensão REST Client: clique em "Send Request")
+### Ordem sugerida: rode de cima para baixo. Os ids abaixo são exemplos, ajuste se precisar.
+
+@baseUrl = http://localhost:8080
+
+### Listar tipos de usuário (Dono de Restaurante e Cliente já vêm cadastrados)
+GET {{baseUrl}}/tipos-usuario
+
+### Cadastrar tipo de usuário
+POST {{baseUrl}}/tipos-usuario
+Content-Type: application/json
+
+{ "nome": "Funcionário" }
+
+### Cadastrar usuário dono (tipoUsuarioId 1 = Dono de Restaurante)
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Maria Souza",
+  "email": "maria@email.com",
+  "login": "maria.souza",
+  "tipoUsuarioId": 1
+}
+
+### Cadastrar usuário cliente (tipoUsuarioId 2 = Cliente)
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "email": "joao@email.com",
+  "login": "joao.silva",
+  "tipoUsuarioId": 2
+}
+
+### Associar usuário a outro tipo
+PATCH {{baseUrl}}/usuarios/2/tipo
+Content-Type: application/json
+
+{ "tipoUsuarioId": 1 }
+
+### Cadastrar restaurante
+POST {{baseUrl}}/restaurantes
+Content-Type: application/json
+
+{
+  "nome": "Cantina da Nona",
+  "endereco": "Rua das Flores, 123 - Centro",
+  "tipoCozinha": "Italiana",
+  "horarioFuncionamento": "Terça a Domingo, das 11h às 23h",
+  "donoId": 1
+}
+
+### Listar restaurantes
+GET {{baseUrl}}/restaurantes
+
+### Cadastrar item do cardápio
+POST {{baseUrl}}/itens-cardapio
+Content-Type: application/json
+
+{
+  "nome": "Lasanha à bolonhesa",
+  "descricao": "Lasanha caseira com molho bolonhesa",
+  "preco": 49.90,
+  "disponivelApenasNoLocal": false,
+  "caminhoFoto": "/imagens/pratos/lasanha.jpg",
+  "restauranteId": 1
+}
+
+### Listar itens de um restaurante
+GET {{baseUrl}}/itens-cardapio?restauranteId=1
